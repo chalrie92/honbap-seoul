@@ -4,28 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, Star, MapPin } from "lucide-react";
 
-export interface MenuItem {
-  name: string;
-  price: string;
-}
-
-export interface Restaurant {
-  id: string;
-  name: string;
-  nameJp: string;
-  category: string;
-  rating: number;
-  reviews: number;
-  address: string;
-  tags: string[];
-  imageUrl: string;
-  menu?: MenuItem[];
-  description?: string;
-  naverMapUrl?: string;
-  isSoloFriendly?: boolean;
-  hasJapaneseMenu?: boolean;
-  isLateNight?: boolean;
-}
+import { Restaurant } from "@/types";
 
 interface BottomSheetProps {
   restaurants: Restaurant[];

@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { MapPin, Search, Plus } from "lucide-react";
-import BottomSheet, { Restaurant } from "@/components/BottomSheet";
+import BottomSheet from "@/components/BottomSheet";
 import SubmissionModal from "@/components/SubmissionModal";
 import NaverMap from "@/components/NaverMap";
+import { Restaurant } from "@/types";
 
 const DUMMY_RESTAURANTS: Restaurant[] = [
   {
@@ -17,7 +18,7 @@ const DUMMY_RESTAURANTS: Restaurant[] = [
     address: "서울 마포구 어울마당로 123",
     tags: ["1人食いOK", "深夜営業", "コスパ最高"],
     imageUrl: "https://images.unsplash.com/photo-1623341214825-9f4f963727da?q=80&w=300&auto=format&fit=crop",
-    description: "安くて美味しい韓国のソ울フード。カウンター席があるので1人でも気兼ねなく入れます。24時間営業なので深夜の空腹にも最適です。",
+    description: "安くて美味しい韓国のソウルフード。カウンター席があるので1人에서도 気兼ねなく入れます。24時間営業なので深夜의空腹에도 최적입니다.",
     naverMapUrl: "https://naver.me/example1",
     menu: [
       { name: "元祖キンパ", price: "3,500w" },
@@ -28,14 +29,14 @@ const DUMMY_RESTAURANTS: Restaurant[] = [
   {
     id: "2",
     name: "우동카덴 홍대점",
-    nameJp: "うどんカデン 弘大店",
+    nameJp: "うどんカデン 弘대店",
     category: "和食・うどん",
     rating: 4.6,
     reviews: 342,
     address: "서울 마포구 양화로 123",
     tags: ["日本語メニュー", "カウンター席あり", "行列店"],
     imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=300&auto=format&fit=crop",
-    description: "本格的な手打ちうどんが楽しめる人気店。1人でも利用しやすいカウンター席が充実しています。日本語のメニューも用意されています。",
+    description: "本格的な手打ちうどんが楽しめる人気店。1人でも利用しやすいカウンター席が充実しています。日本語의メニュー도用意されています.",
     naverMapUrl: "https://naver.me/example2",
     menu: [
       { name: "かけうどん", price: "9,000w" },
@@ -53,7 +54,7 @@ const DUMMY_RESTAURANTS: Restaurant[] = [
     address: "서울 마포구 잔다리로 123",
     tags: ["1人食いOK", "日本語対応", "サク飯"],
     imageUrl: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?q=80&w=300&auto=format&fit=crop",
-    description: "日本の味が恋しくなった時にぴったりな丼専門店。店員さんが親切で、1人用の座席も確保されています。回転が速いのでサクッと食べられます。",
+    description: "日本の味が恋しくなった時にぴったりな丼専門店。店員さんが親切で、1人用の座席도 確保されています。回転이 빠르므로 뚝딱 먹고 가기 좋아요.",
     naverMapUrl: "https://naver.me/example3",
     menu: [
       { name: "サケ丼", price: "12,000w" },
@@ -64,9 +65,14 @@ const DUMMY_RESTAURANTS: Restaurant[] = [
 ];
 
 export default function Home() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>(DUMMY_RESTAURANTS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
+  const handleSubmissionSuccess = (newRestaurant: any) => {
+    setRestaurants(prev => [...prev, newRestaurant]);
+  };
+
   // Filter states
   const [activeFilters, setActiveFilters] = useState<string[]>(["1人食いOK"]);
 
@@ -76,14 +82,14 @@ export default function Home() {
     );
   };
 
-  const filters = ["1人食いOK", "日本語メニュー", "深夜営業"];
+  const filters = ["1人食이OK", "日本語メニュー", "深夜営業"];
 
   return (
     <main className="flex-1 relative flex flex-col h-full w-full bg-gray-200">
       {/* Background Map (Naver Maps) */}
       <div className="absolute inset-0 z-0 bg-gray-200">
         <NaverMap 
-          restaurants={DUMMY_RESTAURANTS} 
+          restaurants={restaurants} 
           selectedId={selectedId} 
           onSelect={setSelectedId} 
         />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Restaurant } from "./BottomSheet";
+import { Restaurant } from "@/types";
 
 interface NaverMapProps {
   restaurants: Restaurant[];

@@ -4,7 +4,7 @@ import { useState } from "react";
 import NaverMap from "@/components/NaverMap";
 import BottomSheetKr from "@/components/BottomSheetKr";
 import SubmissionModalKr from "@/components/SubmissionModalKr";
-import { Restaurant } from "@/components/BottomSheet";
+import { Restaurant } from "@/types";
 
 const DUMMY_RESTAURANTS_KR: Restaurant[] = [
   {
@@ -67,7 +67,7 @@ export default function KoreanPage() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>(DUMMY_RESTAURANTS_KR);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+ 
   const handleSubmissionSuccess = (newRestaurant: any) => {
     setRestaurants(prev => [...prev, newRestaurant]);
   };
