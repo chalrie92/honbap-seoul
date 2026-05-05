@@ -14,12 +14,12 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     category: "분식",
     rating: 4.2,
     reviews: 128,
-    address: "서울 마포구 어울마당로 123",
+    address: "서울 중구 퇴계로45길 20",
     tags: ["혼밥환영", "심야영업", "가성비갑"],
     imageUrl: "https://images.unsplash.com/photo-1623341214825-9f4f963727da?q=80&w=300&auto=format&fit=crop",
     description: "싸고 맛있는 한국의 소울푸드. 카운터석이 있어서 혼자서도 눈치 보지 않고 먹을 수 있습니다. 24시간 영업이라 늦은 밤 야식으로 최고예요.",
     naverMapUrl: "https://naver.me/example1",
-    coordinates: { lat: 37.5562, lng: 126.9231 },
+    coordinates: { lat: 37.5625, lng: 126.9980 },
     menu: [
       { name: "원조김밥", price: "3,500원" },
       { name: "라볶이", price: "5,500원" },
@@ -33,12 +33,12 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     category: "일식·우동",
     rating: 4.6,
     reviews: 342,
-    address: "서울 마포구 양화로 123",
+    address: "서울 중구 퇴계로45길 22",
     tags: ["일본어메뉴", "다찌석", "웨이팅맛집"],
     imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=300&auto=format&fit=crop",
     description: "본격적인 수타 우동을 즐길 수 있는 인기 식당. 혼자 이용하기 좋은 카운터석이 잘 되어 있습니다. 일본어 메뉴판도 준비되어 있어요.",
     naverMapUrl: "https://naver.me/example2",
-    coordinates: { lat: 37.5545, lng: 126.9255 },
+    coordinates: { lat: 37.5621, lng: 126.9984 },
     menu: [
       { name: "가케우동", price: "9,000원" },
       { name: "튀김우동", price: "13,000원" },
@@ -52,12 +52,12 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     category: "일식·덮밥",
     rating: 4.4,
     reviews: 215,
-    address: "서울 마포구 잔다리로 123",
+    address: "서울 중구 퇴계로45길 25",
     tags: ["혼밥OK", "일본어대응", "빠른식사"],
     imageUrl: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?q=80&w=300&auto=format&fit=crop",
     description: "일본의 맛이 그리워질 때 딱인 덮밥 전문점. 직원분들이 친절하시고 1인용 좌석도 확보되어 있습니다. 회전율이 빨라 뚝딱 먹고 가기 좋아요.",
     naverMapUrl: "https://naver.me/example3",
-    coordinates: { lat: 37.5578, lng: 126.9260 },
+    coordinates: { lat: 37.5615, lng: 126.9990 },
     menu: [
       { name: "사케동", price: "12,000원" },
       { name: "가츠동", price: "9,500원" },
@@ -68,7 +68,7 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
 
 export default function KoreanPage() {
   const [allRestaurants, setAllRestaurants] = useState<Restaurant[]>(DUMMY_RESTAURANTS_KR);
-  const [visibleIds, setVisibleIds] = useState<string[]>(DUMMY_RESTAURANTS_KR.map(r => r.id));
+  const [visibleIds, setVisibleIds] = useState<string[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
  
@@ -78,6 +78,8 @@ export default function KoreanPage() {
 
   // Filter restaurants based on visibleIds
   const visibleRestaurants = useMemo(() => {
+    // If no filter applied yet, show all near the center initially
+    if (visibleIds.length === 0) return [];
     return allRestaurants.filter(r => visibleIds.includes(r.id));
   }, [allRestaurants, visibleIds]);
 

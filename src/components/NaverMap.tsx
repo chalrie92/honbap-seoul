@@ -14,6 +14,12 @@ export default function NaverMap({ restaurants, selectedId, onSelect, onVisibleR
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
+  const restaurantsRef = useRef(restaurants);
+
+  // Keep restaurantsRef in sync
+  useEffect(() => {
+    restaurantsRef.current = restaurants;
+  }, [restaurants]);
 
   useEffect(() => {
     const initMap = () => {
@@ -23,8 +29,8 @@ export default function NaverMap({ restaurants, selectedId, onSelect, onVisibleR
       // Initialize Map
       if (!mapInstanceRef.current) {
         const mapOptions = {
-          center: new naver.maps.LatLng(37.5559, 126.9242),
-          zoom: 15,
+          center: new naver.maps.LatLng(37.5621, 126.9984), // Toegye-ro 45-gil, 22
+          zoom: 16,
           mapDataControl: false,
           scaleControl: false,
           mapTypeControl: false,
@@ -35,10 +41,15 @@ export default function NaverMap({ restaurants, selectedId, onSelect, onVisibleR
         const map = new naver.maps.Map(mapRef.current, mapOptions);
         mapInstanceRef.current = map;
 
+        // Add map click listener to minimize bottom sheet
+        naver.maps.Event.addListener(map, 'click', () => {
+          onSelect(null);
+        });
+
         // Add bounds change listener
-        naver.maps.Event.addListener(map, 'idle', () => {
+        const updateVisible = () => {
           const bounds = map.getBounds();
-          const visibleIds = restaurants
+          const visibleIds = restaurantsRef.current
             .filter(r => {
               if (!r.coordinates) return false;
               const pos = new naver.maps.LatLng(r.coordinates.lat, r.coordinates.lng);
@@ -49,7 +60,11 @@ export default function NaverMap({ restaurants, selectedId, onSelect, onVisibleR
           if (onVisibleRestaurantsChange) {
             onVisibleRestaurantsChange(visibleIds);
           }
-        });
+        };
+
+        naver.maps.Event.addListener(map, 'idle', updateVisible);
+        // Initial check
+        setTimeout(updateVisible, 500);
       }
       
       naver.maps.Event.trigger(mapInstanceRef.current, 'resize');
@@ -89,7 +104,9 @@ export default function NaverMap({ restaurants, selectedId, onSelect, onVisibleR
           },
         });
 
-        naver.maps.Event.addListener(marker, "click", () => {
+        naver.maps.Event.addListener(marker, "click", (e: any) => {
+          // Stop propagation to prevent map click listener
+          if (e.domEvent) e.domEvent.stopPropagation();
           onSelect(r.id);
           map.panTo(position);
         });
@@ -109,7 +126,7 @@ export default function NaverMap({ restaurants, selectedId, onSelect, onVisibleR
     } else {
       renderMarkers();
     }
-  }, [restaurants, selectedId, onSelect, onVisibleRestaurantsChange]);
+  }, [selectedId, onSelect, onVisibleRestaurantsChange]);
 
   return <div ref={mapRef} className="w-full h-full" />;
 }
