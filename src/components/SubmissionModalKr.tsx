@@ -30,6 +30,16 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
   const [mapRef, setMapRef] = useState<HTMLDivElement | null>(null);
   const [miniMap, setMiniMap] = useState<any>(null);
   const [marker, setMarker] = useState<any>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // Update preview when image changes
+  const handleImageChange = (file: File) => {
+    setFormData({ ...formData, imageFile: file });
+    if (typeof window !== "undefined") {
+      const url = URL.createObjectURL(file);
+      setImagePreview(url);
+    }
+  };
 
   const searchAddress = () => {
     if (!formData.address) return;
@@ -110,7 +120,7 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
             formData.hasJapaneseMenu ? "일본어메뉴" : "",
             formData.isLateNight ? "심야영업" : ""
           ].filter(Boolean),
-          imageUrl: formData.imageFile ? URL.createObjectURL(formData.imageFile) : "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=300&auto=format&fit=crop",
+          imageUrl: imagePreview || "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=300&auto=format&fit=crop",
           description: formData.description,
           naverMapUrl: formData.naverMapUrl,
           coordinates: formData.coordinates
@@ -137,6 +147,7 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
           setMiniMap(null);
           setMarker(null);
         }
+        setImagePreview(null);
       }, 2000);
     }, 1500);
   };
@@ -315,9 +326,9 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
                     <div>
                       <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">음식 또는 메뉴판 사진 (선택)</label>
                       <label className="w-full py-8 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center gap-2 text-gray-400 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer relative overflow-hidden">
-                        {formData.imageFile ? (
+                        {imagePreview ? (
                           <div className="absolute inset-0 w-full h-full">
-                            <img src={URL.createObjectURL(formData.imageFile)} alt="preview" className="w-full h-full object-cover" />
+                            <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
                               <Camera className="w-6 h-6 mb-1" />
                               <span className="text-xs font-medium">사진 변경하기</span>
@@ -335,7 +346,7 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
                           className="hidden"
                           onChange={(e) => {
                             if (e.target.files && e.target.files[0]) {
-                              setFormData({...formData, imageFile: e.target.files[0]});
+                              handleImageChange(e.target.files[0]);
                             }
                           }}
                         />
