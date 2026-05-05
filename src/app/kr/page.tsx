@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import NaverMap from "@/components/NaverMap";
-import BottomSheet, { Restaurant } from "@/components/BottomSheet";
-import SubmissionModal from "@/components/SubmissionModal";
+import BottomSheetKr from "@/components/BottomSheetKr";
+import SubmissionModalKr from "@/components/SubmissionModalKr";
+import { Restaurant } from "@/components/BottomSheet";
 
 const DUMMY_RESTAURANTS_KR: Restaurant[] = [
   {
@@ -63,8 +64,13 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
 ];
 
 export default function KoreanPage() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>(DUMMY_RESTAURANTS_KR);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleSubmissionSuccess = (newRestaurant: any) => {
+    setRestaurants(prev => [...prev, newRestaurant]);
+  };
 
   return (
     <main className="relative w-full h-full flex flex-col bg-gray-100">
@@ -89,23 +95,24 @@ export default function KoreanPage() {
       {/* Background Map (Naver Maps) */}
       <div className="absolute inset-0 z-0 bg-gray-200">
         <NaverMap 
-          restaurants={DUMMY_RESTAURANTS_KR} 
+          restaurants={restaurants} 
           selectedId={selectedId}
           onSelect={setSelectedId}
         />
       </div>
 
       {/* Bottom Sheet Component */}
-      <BottomSheet 
-        restaurants={DUMMY_RESTAURANTS_KR}
+      <BottomSheetKr 
+        restaurants={restaurants}
         selectedId={selectedId}
         onSelect={setSelectedId}
       />
 
       {/* Submission Modal Component */}
-      <SubmissionModal 
+      <SubmissionModalKr 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        onSubmitSuccess={handleSubmissionSuccess}
       />
     </main>
   );

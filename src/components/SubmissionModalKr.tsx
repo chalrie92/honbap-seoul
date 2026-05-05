@@ -100,15 +100,15 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
         onSubmitSuccess({
           id: Date.now().toString(),
           name: formData.name,
-          nameJp: formData.name, // Auto-copy for now
+          nameJp: formData.name, 
           category: "새로 등록됨",
           rating: 0,
           reviews: 0,
           address: formData.address,
           tags: [
-            formData.isSoloFriendly ? "1人食いOK" : "",
-            formData.hasJapaneseMenu ? "日本語メニュー" : "",
-            formData.isLateNight ? "深夜営業" : ""
+            formData.isSoloFriendly ? "혼밥가능" : "",
+            formData.hasJapaneseMenu ? "일본어메뉴" : "",
+            formData.isLateNight ? "심야영업" : ""
           ].filter(Boolean),
           imageUrl: formData.imageFile ? URL.createObjectURL(formData.imageFile) : "https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=300&auto=format&fit=crop",
           description: formData.description,

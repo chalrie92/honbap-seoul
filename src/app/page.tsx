@@ -134,7 +134,7 @@ export default function Home() {
 
       {/* Bottom Sheet for Restaurants */}
       <BottomSheet 
-        restaurants={DUMMY_RESTAURANTS} 
+        restaurants={restaurants} 
         selectedId={selectedId} 
         onSelect={setSelectedId} 
       />
@@ -143,6 +143,7 @@ export default function Home() {
       <SubmissionModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
+        onSubmitSuccess={handleSubmissionSuccess}
       />
     </main>
   );

@@ -63,14 +63,14 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
       {/* Header */}
       <div className="px-5 pb-3 border-b border-gray-100 flex justify-between items-center shrink-0">
         <h2 className="text-lg font-bold text-gray-800">
-          {selectedRestaurant ? "選択された店舗" : "周辺のおすすめ店舗"}
+          {selectedRestaurant ? "선택된 식당" : "주변 추천 식당"}
         </h2>
         {selectedRestaurant && (
           <button
             onClick={() => handleSelect(null)}
             className="text-sm text-blue-500 font-medium bg-blue-50 px-3 py-1 rounded-full"
           >
-            一覧に戻る
+            목록으로
           </button>
         )}
       </div>
@@ -133,14 +133,14 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
                 >
                   {r.description && (
                     <div>
-                      <h4 className="text-sm font-bold text-gray-900 mb-1">おすすめポイント</h4>
+                      <h4 className="text-sm font-bold text-gray-900 mb-1">추천 이유</h4>
                       <p className="text-sm text-gray-600 leading-relaxed">{r.description}</p>
                     </div>
                   )}
 
                   {/* Add Address Display */}
                   <div>
-                    <h4 className="text-sm font-bold text-gray-900 mb-1">住所</h4>
+                    <h4 className="text-sm font-bold text-gray-900 mb-1">주소</h4>
                     <p className="text-sm text-gray-600 flex items-center gap-1">
                       <MapPin className="w-3.5 h-3.5" />
                       {r.address}
@@ -149,7 +149,7 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
 
                   {r.menu && r.menu.length > 0 && (
                     <div>
-                      <h4 className="text-sm font-bold text-gray-900 mb-2">主なメニュー</h4>
+                      <h4 className="text-sm font-bold text-gray-900 mb-2">주요 메뉴</h4>
                       <div className="bg-gray-50 rounded-xl p-3 space-y-2">
                         {r.menu.map((item, idx) => (
                           <div key={idx} className="flex justify-between text-sm">
@@ -169,7 +169,7 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
                       className="flex items-center justify-center gap-2 w-full py-3 bg-green-50 text-green-700 rounded-xl text-sm font-bold border border-green-100"
                     >
                       <MapPin className="w-4 h-4" />
-                      Naver Mapで見る
+                      네이버 지도로 보기
                     </a>
                   )}
                 </motion.div>
