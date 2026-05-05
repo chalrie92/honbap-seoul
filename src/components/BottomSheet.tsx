@@ -39,11 +39,17 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
   const selectedRestaurant = selectedId ? restaurants.find((r) => r.id === selectedId) : null;
   const displayList = selectedRestaurant ? [selectedRestaurant] : restaurants;
 
+  const handleSelect = (id: string | null) => {
+    onSelect(id);
+    if (id) setIsExpanded(true);
+    else setIsExpanded(false);
+  };
+
   return (
     <motion.div
       className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-[0_-4px_20px_rgba(0,0,0,0.1)] z-20 flex flex-col overflow-hidden"
       initial={{ y: "100%" }}
-      animate={{ y: 0, height: isExpanded ? "80%" : "35%" }}
+      animate={{ y: 0, height: selectedRestaurant ? (isExpanded ? "80%" : "35%") : "35%" }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
     >
       {/* Drag Handle */}
@@ -61,7 +67,7 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
         </h2>
         {selectedRestaurant && (
           <button
-            onClick={() => onSelect(null)}
+            onClick={() => handleSelect(null)}
             className="text-sm text-blue-500 font-medium bg-blue-50 px-3 py-1 rounded-full"
           >
             一覧に戻る
@@ -78,8 +84,14 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="flex flex-col gap-4 p-4 bg-white border border-gray-100 rounded-2xl shadow-sm cursor-pointer hover:border-rose-200 transition-colors"
-              onClick={() => !isExpanded && onSelect(r.id)}
+              className={`flex flex-col gap-4 p-4 bg-white border rounded-2xl shadow-sm cursor-pointer transition-colors ${selectedId === r.id ? 'border-rose-400 bg-rose-50/10' : 'border-gray-100 hover:border-rose-200'}`}
+              onClick={() => {
+                if (selectedId === r.id) {
+                  setIsExpanded(!isExpanded);
+                } else {
+                  handleSelect(r.id);
+                }
+              }}
             >
               <div className="flex gap-4">
                 <img

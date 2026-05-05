@@ -16,15 +16,68 @@ export default function SubmissionModal({ isOpen, onClose }: SubmissionModalProp
   // Form State
   const [formData, setFormData] = useState({
     name: "",
+    address: "",
     naverMapUrl: "",
     isSoloFriendly: null as boolean | null,
     hasJapaneseMenu: null as boolean | null,
     isLateNight: null as boolean | null,
     description: "",
+    imageFile: null as File | null,
+    coordinates: null as { lat: number; lng: number } | null,
   });
+
+  const [mapRef, setMapRef] = useState<HTMLDivElement | null>(null);
+  const [miniMap, setMiniMap] = useState<any>(null);
+  const [marker, setMarker] = useState<any>(null);
+
+  const searchAddress = () => {
+    if (!formData.address) return;
+    
+    const naver = (window as any).naver;
+    if (naver && naver.maps && naver.maps.Service) {
+      naver.maps.Service.geocode({ query: formData.address }, function(status: any, response: any) {
+        if (status !== naver.maps.Service.Status.OK) {
+          alert('주소를 찾을 수 없습니다.');
+          return;
+        }
+        
+        const result = response.v2.addresses[0];
+        if (result) {
+          const lat = parseFloat(result.y);
+          const lng = parseFloat(result.x);
+          
+          setFormData(prev => ({ ...prev, coordinates: { lat, lng } }));
+
+          if (mapRef) {
+            const position = new naver.maps.LatLng(lat, lng);
+            if (!miniMap) {
+              const newMap = new naver.maps.Map(mapRef, {
+                center: position,
+                zoom: 16,
+              });
+              setMiniMap(newMap);
+              const newMarker = new naver.maps.Marker({
+                position,
+                map: newMap
+              });
+              setMarker(newMarker);
+            } else {
+              miniMap.setCenter(position);
+              if (marker) {
+                marker.setPosition(position);
+              }
+            }
+          }
+        }
+      });
+    } else {
+      alert("지도 서비스가 아직 준비되지 않았습니다.");
+    }
+  };
 
   const isFormValid = 
     formData.name && 
+    formData.address &&
     formData.naverMapUrl && 
     formData.isSoloFriendly !== null && 
     formData.hasJapaneseMenu !== null && 
@@ -46,12 +99,20 @@ export default function SubmissionModal({ isOpen, onClose }: SubmissionModalProp
         // Reset form
         setFormData({
           name: "",
+          address: "",
           naverMapUrl: "",
           isSoloFriendly: null,
           hasJapaneseMenu: null,
           isLateNight: null,
           description: "",
+          imageFile: null,
+          coordinates: null,
         });
+        if (miniMap) {
+          miniMap.destroy();
+          setMiniMap(null);
+          setMarker(null);
+        }
       }, 2000);
     }, 1500);
   };
@@ -150,6 +211,33 @@ export default function SubmissionModal({ isOpen, onClose }: SubmissionModalProp
                       </div>
                       
                       <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">주소 <span className="text-rose-500">*</span></label>
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            required
+                            value={formData.address}
+                            onChange={(e) => setFormData({...formData, address: e.target.value})}
+                            placeholder="도로명 주소 등을 입력해주세요"
+                            className="flex-1 px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 text-sm transition-all"
+                          />
+                          <button
+                            type="button"
+                            onClick={searchAddress}
+                            className="px-4 bg-gray-900 text-white rounded-2xl text-xs font-bold whitespace-nowrap hover:bg-black transition-colors"
+                          >
+                            위치 확인
+                          </button>
+                        </div>
+                        {/* Mini Map Container */}
+                        <div 
+                          ref={(el) => setMapRef(el)} 
+                          className={`mt-2 rounded-xl overflow-hidden transition-all duration-300 ${formData.coordinates ? 'h-32 opacity-100' : 'h-0 opacity-0'}`}
+                          style={{ background: '#eee' }}
+                        />
+                      </div>
+
+                      <div>
                         <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">네이버 지도 링크 <span className="text-rose-500">*</span></label>
                         <div className="relative">
                           <input
@@ -202,13 +290,32 @@ export default function SubmissionModal({ isOpen, onClose }: SubmissionModalProp
                     {/* Image Upload (Optional) */}
                     <div>
                       <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">음식 또는 메뉴판 사진 (선택)</label>
-                      <button
-                        type="button"
-                        className="w-full py-8 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center gap-2 text-gray-400 hover:bg-gray-50 hover:border-gray-300 transition-all"
-                      >
-                        <Camera className="w-8 h-8" />
-                        <span className="text-xs font-medium">사진 추가하기</span>
-                      </button>
+                      <label className="w-full py-8 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center gap-2 text-gray-400 hover:bg-gray-50 hover:border-gray-300 transition-all cursor-pointer relative overflow-hidden">
+                        {formData.imageFile ? (
+                          <div className="absolute inset-0 w-full h-full">
+                            <img src={URL.createObjectURL(formData.imageFile)} alt="preview" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white opacity-0 hover:opacity-100 transition-opacity">
+                              <Camera className="w-6 h-6 mb-1" />
+                              <span className="text-xs font-medium">사진 변경하기</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <>
+                            <Camera className="w-8 h-8" />
+                            <span className="text-xs font-medium">사진 추가하기</span>
+                          </>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setFormData({...formData, imageFile: e.target.files[0]});
+                            }
+                          }}
+                        />
+                      </label>
                     </div>
                     
                     <button
