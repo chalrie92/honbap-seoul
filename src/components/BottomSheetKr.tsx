@@ -109,7 +109,7 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
                       {r.rating} <span className="text-gray-400 font-normal">({r.reviews})</span>
                     </div>
                   </div>
-                  <h3 className="font-bold text-gray-900 truncate">{r.nameJp}</h3>
+                  <h3 className="font-bold text-gray-900 truncate">{r.name}</h3>
                   <p className="text-xs text-gray-500 truncate mb-2">{r.name}</p>
                   <div className="flex flex-wrap gap-1">
                     {r.tags.map((tag) => (
