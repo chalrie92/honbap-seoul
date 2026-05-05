@@ -19,7 +19,7 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     imageUrl: "https://images.unsplash.com/photo-1623341214825-9f4f963727da?q=80&w=300&auto=format&fit=crop",
     description: "싸고 맛있는 한국의 소울푸드. 카운터석이 있어서 혼자서도 눈치 보지 않고 먹을 수 있습니다. 24시간 영업이라 늦은 밤 야식으로 최고예요.",
     naverMapUrl: "https://naver.me/example1",
-    coordinates: { lat: 37.5625, lng: 126.9980 },
+    coordinates: { lat: 37.5623, lng: 126.9978 },
     menu: [
       { name: "원조김밥", price: "3,500원" },
       { name: "라볶이", price: "5,500원" },
@@ -57,7 +57,7 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     imageUrl: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?q=80&w=300&auto=format&fit=crop",
     description: "일본의 맛이 그리워질 때 딱인 덮밥 전문점. 직원분들이 친절하시고 1인용 좌석도 확보되어 있습니다. 회전율이 빨라 뚝딱 먹고 가기 좋아요.",
     naverMapUrl: "https://naver.me/example3",
-    coordinates: { lat: 37.5615, lng: 126.9990 },
+    coordinates: { lat: 37.5626, lng: 126.9988 },
     menu: [
       { name: "사케동", price: "12,000원" },
       { name: "가츠동", price: "9,500원" },
@@ -78,7 +78,6 @@ export default function KoreanPage() {
 
   // Filter restaurants based on visibleIds
   const visibleRestaurants = useMemo(() => {
-    // If no filter applied yet, show all near the center initially
     if (visibleIds.length === 0) return [];
     return allRestaurants.filter(r => visibleIds.includes(r.id));
   }, [allRestaurants, visibleIds]);
