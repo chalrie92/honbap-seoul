@@ -1,65 +1,128 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { MapPin, Search, Plus } from "lucide-react";
+import BottomSheet, { Restaurant } from "@/components/BottomSheet";
+import SubmissionModal from "@/components/SubmissionModal";
+import NaverMap from "@/components/NaverMap";
+
+const DUMMY_RESTAURANTS: Restaurant[] = [
+  {
+    id: "1",
+    name: "김밥천국 홍대본점",
+    nameJp: "キンパ天国 弘大本店",
+    category: "軽食・粉食",
+    rating: 4.2,
+    reviews: 128,
+    address: "서울 마포구 홍익로 10",
+    tags: ["1人食いOK", "深夜営業", "コスパ最高"],
+    imageUrl: "https://images.unsplash.com/photo-1580651315530-69c8e0026377?q=80&w=200&auto=format&fit=crop",
+  },
+  {
+    id: "2",
+    name: "우동카덴 홍대점",
+    nameJp: "うどんカデン 弘大店",
+    category: "和食・うどん",
+    rating: 4.6,
+    reviews: 342,
+    address: "서울 마포구 양화로 100",
+    tags: ["日本語メニュー", "カウンター席あり", "行列店"],
+    imageUrl: "https://images.unsplash.com/photo-1617093727343-374698b1b08d?q=80&w=200&auto=format&fit=crop",
+  },
+  {
+    id: "3",
+    name: "홍대 돈부리 본점",
+    nameJp: "弘大どんぶり 本店",
+    category: "和食・丼",
+    rating: 4.4,
+    reviews: 215,
+    address: "서울 마포구 어울마당로 50",
+    tags: ["1人食いOK", "日本語メニュー", "カウンター席あり"],
+    imageUrl: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=200&auto=format&fit=crop",
+  },
+];
 
 export default function Home() {
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  
+  // Filter states
+  const [activeFilters, setActiveFilters] = useState<string[]>(["1人食いOK"]);
+
+  const toggleFilter = (filter: string) => {
+    setActiveFilters((prev) =>
+      prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]
+    );
+  };
+
+  const filters = ["1人食いOK", "日本語メニュー", "深夜営業"];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="flex-1 relative flex flex-col h-full w-full bg-gray-200">
+      {/* Background Map (Naver Maps) */}
+      <div className="absolute inset-0 z-0 bg-gray-200">
+        <NaverMap 
+          restaurants={DUMMY_RESTAURANTS} 
+          selectedId={selectedId} 
+          onSelect={setSelectedId} 
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+      </div>
+
+      {/* Top Header & Filters */}
+      <header className="relative z-10 w-full pt-12 pb-4 px-4 flex flex-col gap-3 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none">
+        <div className="flex justify-between items-center w-full pointer-events-auto">
+          <h1 className="text-xl font-bold text-white drop-shadow-md flex items-center gap-1 tracking-tight">
+            혼밥서울 <span className="text-[10px] font-normal opacity-90 border border-white/40 px-1.5 py-0.5 rounded-sm ml-1">ホンバプ</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+          <button className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-sm text-gray-800 hover:bg-white transition-colors">
+            <Search className="w-5 h-5" />
+          </button>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        
+        {/* Filter Pills */}
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide pointer-events-auto">
+          {filters.map((filter) => {
+            const isActive = activeFilters.includes(filter);
+            return (
+              <button
+                key={filter}
+                onClick={() => toggleFilter(filter)}
+                className={`px-4 py-1.5 text-sm font-medium rounded-full shadow-sm whitespace-nowrap transition-colors border ${
+                  isActive
+                    ? "bg-rose-500 text-white border-rose-500"
+                    : "bg-white/95 text-gray-700 border-gray-200 hover:bg-gray-50"
+                }`}
+              >
+                {isActive && <span className="mr-1 opacity-80">✓</span>}
+                {filter}
+              </button>
+            );
+          })}
         </div>
-      </main>
-    </div>
+      </header>
+
+      {/* Bottom Floating Action Button (for UGC form) */}
+      <div className="absolute bottom-[calc(35%+20px)] right-4 z-10 transition-all duration-300 pointer-events-auto">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="bg-gray-900 text-white p-3.5 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.3)] flex items-center justify-center hover:scale-105 transition-transform"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Bottom Sheet for Restaurants */}
+      <BottomSheet 
+        restaurants={DUMMY_RESTAURANTS} 
+        selectedId={selectedId} 
+        onSelect={setSelectedId} 
+      />
+
+      {/* UGC Submission Modal */}
+      <SubmissionModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+    </main>
   );
 }
