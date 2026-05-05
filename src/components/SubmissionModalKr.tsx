@@ -89,6 +89,7 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
   const isFormValid = 
     formData.name && 
     formData.address &&
+    formData.coordinates && // MUST have coordinates from "위치 확인"
     formData.naverMapUrl && 
     formData.isSoloFriendly !== null && 
     formData.hasJapaneseMenu !== null && 
@@ -368,7 +369,7 @@ export default function SubmissionModal({ isOpen, onClose, onSubmitSuccess }: Su
                     {!isFormValid && !isSubmitting && (
                       <p className="flex items-center justify-center gap-1.5 text-[11px] text-rose-400 font-medium">
                         <AlertCircle className="w-3 h-3" />
-                        모든 필수 항목을 입력해주세요
+                        {!formData.coordinates ? "주소 입력 후 '위치 확인'을 눌러주세요" : "모든 필수 항목을 입력해주세요"}
                       </p>
                     )}
                   </form>

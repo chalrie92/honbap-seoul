@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import NaverMap from "@/components/NaverMap";
 import BottomSheetKr from "@/components/BottomSheetKr";
 import SubmissionModalKr from "@/components/SubmissionModalKr";
@@ -19,6 +19,7 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     imageUrl: "https://images.unsplash.com/photo-1623341214825-9f4f963727da?q=80&w=300&auto=format&fit=crop",
     description: "싸고 맛있는 한국의 소울푸드. 카운터석이 있어서 혼자서도 눈치 보지 않고 먹을 수 있습니다. 24시간 영업이라 늦은 밤 야식으로 최고예요.",
     naverMapUrl: "https://naver.me/example1",
+    coordinates: { lat: 37.5562, lng: 126.9231 },
     menu: [
       { name: "원조김밥", price: "3,500원" },
       { name: "라볶이", price: "5,500원" },
@@ -37,6 +38,7 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=300&auto=format&fit=crop",
     description: "본격적인 수타 우동을 즐길 수 있는 인기 식당. 혼자 이용하기 좋은 카운터석이 잘 되어 있습니다. 일본어 메뉴판도 준비되어 있어요.",
     naverMapUrl: "https://naver.me/example2",
+    coordinates: { lat: 37.5545, lng: 126.9255 },
     menu: [
       { name: "가케우동", price: "9,000원" },
       { name: "튀김우동", price: "13,000원" },
@@ -55,6 +57,7 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
     imageUrl: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?q=80&w=300&auto=format&fit=crop",
     description: "일본의 맛이 그리워질 때 딱인 덮밥 전문점. 직원분들이 친절하시고 1인용 좌석도 확보되어 있습니다. 회전율이 빨라 뚝딱 먹고 가기 좋아요.",
     naverMapUrl: "https://naver.me/example3",
+    coordinates: { lat: 37.5578, lng: 126.9260 },
     menu: [
       { name: "사케동", price: "12,000원" },
       { name: "가츠동", price: "9,500원" },
@@ -64,13 +67,19 @@ const DUMMY_RESTAURANTS_KR: Restaurant[] = [
 ];
 
 export default function KoreanPage() {
-  const [restaurants, setRestaurants] = useState<Restaurant[]>(DUMMY_RESTAURANTS_KR);
+  const [allRestaurants, setAllRestaurants] = useState<Restaurant[]>(DUMMY_RESTAURANTS_KR);
+  const [visibleIds, setVisibleIds] = useState<string[]>(DUMMY_RESTAURANTS_KR.map(r => r.id));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
  
   const handleSubmissionSuccess = (newRestaurant: any) => {
-    setRestaurants(prev => [...prev, newRestaurant]);
+    setAllRestaurants(prev => [...prev, newRestaurant]);
   };
+
+  // Filter restaurants based on visibleIds
+  const visibleRestaurants = useMemo(() => {
+    return allRestaurants.filter(r => visibleIds.includes(r.id));
+  }, [allRestaurants, visibleIds]);
 
   return (
     <main className="relative w-full h-full flex flex-col bg-gray-100">
@@ -95,15 +104,16 @@ export default function KoreanPage() {
       {/* Background Map (Naver Maps) */}
       <div className="absolute inset-0 z-0 bg-gray-200">
         <NaverMap 
-          restaurants={restaurants} 
+          restaurants={allRestaurants} 
           selectedId={selectedId}
           onSelect={setSelectedId}
+          onVisibleRestaurantsChange={setVisibleIds}
         />
       </div>
 
       {/* Bottom Sheet Component */}
       <BottomSheetKr 
-        restaurants={restaurants}
+        restaurants={visibleRestaurants}
         selectedId={selectedId}
         onSelect={setSelectedId}
       />
