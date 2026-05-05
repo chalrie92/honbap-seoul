@@ -4,6 +4,11 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronUp, Star, MapPin } from "lucide-react";
 
+export interface MenuItem {
+  name: string;
+  price: string;
+}
+
 export interface Restaurant {
   id: string;
   name: string;
@@ -14,6 +19,12 @@ export interface Restaurant {
   address: string;
   tags: string[];
   imageUrl: string;
+  menu?: MenuItem[];
+  description?: string;
+  naverMapUrl?: string;
+  isSoloFriendly?: boolean;
+  hasJapaneseMenu?: boolean;
+  isLateNight?: boolean;
 }
 
 interface BottomSheetProps {
@@ -59,45 +70,89 @@ export default function BottomSheet({ restaurants, selectedId, onSelect }: Botto
       </div>
 
       {/* List */}
-      <div className="flex-1 overflow-y-auto px-5 py-2 space-y-4">
-        <AnimatePresence>
+      <div className="flex-1 overflow-y-auto px-5 py-2 space-y-4 pb-10">
+        <AnimatePresence mode="wait">
           {displayList.map((r) => (
             <motion.div
               key={r.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="flex gap-4 p-3 bg-white border border-gray-100 rounded-2xl shadow-sm cursor-pointer hover:border-rose-200 transition-colors"
-              onClick={() => onSelect(r.id)}
+              className="flex flex-col gap-4 p-4 bg-white border border-gray-100 rounded-2xl shadow-sm cursor-pointer hover:border-rose-200 transition-colors"
+              onClick={() => !isExpanded && onSelect(r.id)}
             >
-              <img
-                src={r.imageUrl}
-                alt={r.name}
-                className="w-24 h-24 object-cover rounded-xl bg-gray-100 shrink-0"
-              />
-              <div className="flex-1 min-w-0 flex flex-col justify-center">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-md">
-                    {r.category}
-                  </span>
-                  <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
-                    <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                    {r.rating} <span className="text-gray-400 font-normal">({r.reviews})</span>
+              <div className="flex gap-4">
+                <img
+                  src={r.imageUrl}
+                  alt={r.name}
+                  className="w-24 h-24 object-cover rounded-xl bg-gray-100 shrink-0"
+                />
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-semibold text-rose-500 bg-rose-50 px-2 py-0.5 rounded-md">
+                      {r.category}
+                    </span>
+                    <div className="flex items-center gap-1 text-sm font-medium text-gray-700">
+                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                      {r.rating} <span className="text-gray-400 font-normal">({r.reviews})</span>
+                    </div>
+                  </div>
+                  <h3 className="font-bold text-gray-900 truncate">{r.nameJp}</h3>
+                  <p className="text-xs text-gray-500 truncate mb-2">{r.name}</p>
+                  <div className="flex flex-wrap gap-1">
+                    {r.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded-sm"
+                      >
+                        {tag}
+                      </span>
+                    ))}
                   </div>
                 </div>
-                <h3 className="font-bold text-gray-900 truncate">{r.nameJp}</h3>
-                <p className="text-xs text-gray-500 truncate mb-2">{r.name}</p>
-                <div className="flex flex-wrap gap-1">
-                  {r.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-[10px] px-1.5 py-0.5 bg-gray-100 text-gray-600 rounded-sm"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
               </div>
+
+              {/* Extended Details when selected and expanded */}
+              {selectedId === r.id && isExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="pt-4 border-t border-gray-50 space-y-4"
+                >
+                  {r.description && (
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-900 mb-1">おすすめポイント</h4>
+                      <p className="text-sm text-gray-600 leading-relaxed">{r.description}</p>
+                    </div>
+                  )}
+
+                  {r.menu && r.menu.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-bold text-gray-900 mb-2">主なメニュー</h4>
+                      <div className="bg-gray-50 rounded-xl p-3 space-y-2">
+                        {r.menu.map((item, idx) => (
+                          <div key={idx} className="flex justify-between text-sm">
+                            <span className="text-gray-700">{item.name}</span>
+                            <span className="font-semibold text-gray-900">{item.price}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {r.naverMapUrl && (
+                    <a
+                      href={r.naverMapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-green-50 text-green-700 rounded-xl text-sm font-bold border border-green-100"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      Naver Mapで見る
+                    </a>
+                  )}
+                </motion.div>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>

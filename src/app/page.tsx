@@ -14,9 +14,16 @@ const DUMMY_RESTAURANTS: Restaurant[] = [
     category: "軽食・粉食",
     rating: 4.2,
     reviews: 128,
-    address: "서울 마포구 홍익로 10",
+    address: "서울 마포구 어울마당로 123",
     tags: ["1人食いOK", "深夜営業", "コスパ最高"],
-    imageUrl: "https://images.unsplash.com/photo-1580651315530-69c8e0026377?q=80&w=200&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1623341214825-9f4f963727da?q=80&w=300&auto=format&fit=crop",
+    description: "安くて美味しい韓国のソ울フード。カウンター席があるので1人でも気兼ねなく入れます。24時間営業なので深夜の空腹にも最適です。",
+    naverMapUrl: "https://naver.me/example1",
+    menu: [
+      { name: "元祖キンパ", price: "3,500w" },
+      { name: "ラポッキ", price: "5,500w" },
+      { name: "チーズトンカス", price: "8,000w" }
+    ]
   },
   {
     id: "2",
@@ -25,20 +32,34 @@ const DUMMY_RESTAURANTS: Restaurant[] = [
     category: "和食・うどん",
     rating: 4.6,
     reviews: 342,
-    address: "서울 마포구 양화로 100",
+    address: "서울 마포구 양화로 123",
     tags: ["日本語メニュー", "カウンター席あり", "行列店"],
-    imageUrl: "https://images.unsplash.com/photo-1617093727343-374698b1b08d?q=80&w=200&auto=format&fit=crop",
+    imageUrl: "https://images.unsplash.com/photo-1585032226651-759b368d7246?q=80&w=300&auto=format&fit=crop",
+    description: "本格的な手打ちうどんが楽しめる人気店。1人でも利用しやすいカウンター席が充実しています。日本語のメニューも用意されています。",
+    naverMapUrl: "https://naver.me/example2",
+    menu: [
+      { name: "かけうどん", price: "9,000w" },
+      { name: "天ぷらうどん", price: "13,000w" },
+      { name: "明太子うどん", price: "11,000w" }
+    ]
   },
   {
     id: "3",
-    name: "홍대 돈부리 본점",
+    name: "홍대돈부리 본점",
     nameJp: "弘大どんぶり 本店",
     category: "和食・丼",
     rating: 4.4,
     reviews: 215,
-    address: "서울 마포구 어울마당로 50",
-    tags: ["1人食いOK", "日本語メニュー", "カウンター席あり"],
-    imageUrl: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=200&auto=format&fit=crop",
+    address: "서울 마포구 잔다리로 123",
+    tags: ["1人食いOK", "日本語対応", "サク飯"],
+    imageUrl: "https://images.unsplash.com/photo-1591814448473-7af27feaf71e?q=80&w=300&auto=format&fit=crop",
+    description: "日本の味が恋しくなった時にぴったりな丼専門店。店員さんが親切で、1人用の座席も確保されています。回転が速いのでサクッと食べられます。",
+    naverMapUrl: "https://naver.me/example3",
+    menu: [
+      { name: "サケ丼", price: "12,000w" },
+      { name: "カツ丼", price: "9,500w" },
+      { name: "エビフライ丼", price: "10,500w" }
+    ]
   },
 ];
 
